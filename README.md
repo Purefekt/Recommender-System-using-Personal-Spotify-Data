@@ -1,1 +1,1 @@
-# Recommender-System-using-Personal-Spotify-Data
+# Recommender System using Personal Spotify Data
