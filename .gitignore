@@ -1,3 +1,11 @@
-veer_spotify_details.json
-.idea
+# MacOS files
 .DS_Store
+
+# PyCharm files
+.idea
+__pycache__/
+*.pyc
+
+# Spotify personal data files
+spotify_data/
+.cache

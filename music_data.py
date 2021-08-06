@@ -1,20 +1,12 @@
-import json
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
+from connect_to_api import connect_to_api
+from helper_data_functions import get_top_artists_dataframe
 
-# Connect to the Spotify API
-with open('veer_spotify_details.json', 'r') as spotify_details:
-    data=spotify_details.read()
-spotify_details_dict = json.loads(data)
+# Connect to Spotify API
+connection_details_json = 'spotify_data/veer_spotify_details.json'  # connection details json file
+sp = connect_to_api(connection_details_json)
 
-# https://developer.spotify.com/web-api/using-scopes/
-scope = "user-library-read user-follow-read user-top-read playlist-read-private"
-
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
-    client_id=spotify_details_dict['client_id'],
-    client_secret=spotify_details_dict['client_secret'],
-    redirect_uri=spotify_details_dict['redirect_uri'],
-    scope=scope,
-))
+# Get top artists data
+top_artists = sp.current_user_top_artists(limit=50)
+top_artists_df = get_top_artists_dataframe(top_artists)
 
 
