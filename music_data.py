@@ -8,5 +8,3 @@ sp = connect_to_api(connection_details_json)
 # Get top artists data
 top_artists = sp.current_user_top_artists(limit=50)
 top_artists_df = get_top_artists_dataframe(top_artists)
-
-
