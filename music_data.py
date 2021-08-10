@@ -3,6 +3,7 @@ from helper_data_functions import get_top_artists_dataframe
 from helper_data_functions import get_followed_artists_dataframe
 from helper_data_functions import get_top_tracks_dataframe
 from helper_data_functions import get_saved_tracks_dataframe
+from helper_data_functions import get_playlist_tracks_dataframe
 
 # Connect to Spotify API. Delete .cache file for new user's data
 connection_details_json = 'spotify_data/apu_spotify_details.json'
@@ -23,3 +24,6 @@ top_tracks_df = get_top_tracks_dataframe(sp=sp)
 
 # Get saved tracks data
 saved_tracks_df = get_saved_tracks_dataframe(sp=sp)
+
+# Get playlists tracks data
+playlist_tracks_df = get_playlist_tracks_dataframe(sp=sp)
