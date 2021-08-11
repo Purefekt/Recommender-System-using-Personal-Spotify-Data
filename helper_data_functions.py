@@ -1,4 +1,5 @@
 import pandas as pd
+import yaml
 
 
 def get_top_artists_dataframe(sp):
@@ -8,12 +9,7 @@ def get_top_artists_dataframe(sp):
         results = sp.next(results)
         top_artists_list.extend(results['items'])
 
-    artist_id = list()
-    uri = list()
-    artist_type = list()
-    name = list()
-    genres = list()
-    followers = list()
+    artist_id, uri, artist_type, name, genres, followers = list(), list(), list(), list(), list(), list()
 
     for i in range(len(top_artists_list)):
 
@@ -46,12 +42,7 @@ def get_followed_artists_dataframe(sp):
         results = sp.next(results['artists'])
         followed_artists_list.extend(results['artists']['items'])
 
-    artist_id = list()
-    uri = list()
-    artist_type = list()
-    name = list()
-    genres = list()
-    followers = list()
+    artist_id, uri, artist_type, name, genres, followers = list(), list(), list(), list(), list(), list(),
 
     for i in range(len(followed_artists_list)):
 
@@ -84,47 +75,24 @@ def get_top_tracks_dataframe(sp):
         results = sp.next(results)
         top_tracks_list.extend(results['items'])
 
-    track_id = list()
-    name = list()
-    popularity = list()
-    track_type = list()
-    is_local = list()
-    explicit = list()
-    duration_ms = list()
-    disc_number = list()
-    track_number = list()
-    artist_id = list()
-    artist_name = list()
-    album_artist_id = list()
-    album_artist_name = list()
-    album_id = list()
-    album_name = list()
-    album_release_date = list()
-    album_tracks = list()
-    album_type = list()
-    genres_artist = list()
-    album_genres = list()
-    danceability = list()
-    energy = list()
-    track_key = list()
-    loudness = list()
-    mode = list()
-    speechiness = list()
-    acousticness = list()
-    instrumentalness = list()
-    liveness = list()
-    valence = list()
-    tempo = list()
-    uri = list()
-    track_href = list()
-    analysis_url = list()
-    time_signature = list()
+    # 18 cols for tracks data
+    track_id, name, popularity, track_type, is_local, explicit, duration_ms, disc_number, track_number, artist_id, \
+    artist_name, album_artist_id, album_artist_name, album_id, album_name, album_release_date, album_tracks, \
+    album_type = list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), \
+                 list(), list(), list(), list(), list(), list(),
+
+    # 17 cols for track audio features
+    genres_artist, album_genres, danceability, energy, track_key, loudness, mode, speechiness, acousticness, \
+    instrumentalness, liveness, valence, tempo, uri, track_href, analysis_url, \
+    time_signature = list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), \
+                     list(), list(), list(), list(), list(),
 
     for i in range(len(top_tracks_list)):
 
         # Status
         print(f'{int((i / len(top_tracks_list)) * 100)}% done...')
 
+        # Tracks
         track_id.append(top_tracks_list[i]['id'])
         name.append(top_tracks_list[i]['name'])
         popularity.append(top_tracks_list[i]['popularity'])
@@ -143,6 +111,8 @@ def get_top_tracks_dataframe(sp):
         album_release_date.append(top_tracks_list[i]['album']['release_date'])
         album_tracks.append(top_tracks_list[i]['album']['total_tracks'])
         album_type.append(top_tracks_list[i]['album']['type'])
+
+        # Track audio features
         genres_artist.append(sp.artists({artist_id[i]})['artists'][0]['genres'])
         album_genres.append(sp.artists({album_artist_id[i]})['artists'][0]['genres'])
         danceability.append(sp.audio_features(track_id[i])[0]['danceability'])
@@ -209,48 +179,24 @@ def get_saved_tracks_dataframe(sp):
         results = sp.next(results)
         saved_tracks_list.extend(results['items'])
 
-    track_id = list()
-    name = list()
-    popularity = list()
-    track_type = list()
-    is_local = list()
-    explicit = list()
-    duration_ms = list()
-    disc_number = list()
-    track_number = list()
-    artist_id = list()
-    artist_name = list()
-    album_artist_id = list()
-    album_artist_name = list()
-    album_id = list()
-    album_name = list()
-    album_release_date = list()
-    album_tracks = list()
-    album_type = list()
-    added_at = list()
-    genres_artist = list()
-    album_genres = list()
-    danceability = list()
-    energy = list()
-    track_key = list()
-    loudness = list()
-    mode = list()
-    speechiness = list()
-    acousticness = list()
-    instrumentalness = list()
-    liveness = list()
-    valence = list()
-    tempo = list()
-    uri = list()
-    track_href = list()
-    analysis_url = list()
-    time_signature = list()
+    # 19 cols for tracks
+    track_id, name, popularity, track_type, is_local, explicit, duration_ms, disc_number, track_number, artist_id, \
+    artist_name, album_artist_id, album_artist_name, album_id, album_name, album_release_date, album_tracks, \
+    album_type, added_at = list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), \
+                           list(), list(), list(), list(), list(), list(), list(), list()
+
+    # 17 cols for audio features
+    genres_artist, album_genres, danceability, energy, track_key, loudness, mode, speechiness, acousticness, \
+    instrumentalness, liveness, valence, tempo, uri, track_href, analysis_url, \
+    time_signature = list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), \
+                     list(), list(), list(), list(), list(),
 
     for i in range(len(saved_tracks_list)):
 
         # Status
         print(f'{int((i / len(saved_tracks_list)) * 100)}% done...')
 
+        # Tracks
         track_id.append(saved_tracks_list[i]['track']['id'])
         name.append(saved_tracks_list[i]['track']['name'])
         popularity.append(saved_tracks_list[i]['track']['popularity'])
@@ -270,6 +216,8 @@ def get_saved_tracks_dataframe(sp):
         album_tracks.append(saved_tracks_list[i]['track']['album']['total_tracks'])
         album_type.append(saved_tracks_list[i]['track']['album']['type'])
         added_at.append(saved_tracks_list[i]['added_at'])
+
+        # Track audio features
         genres_artist.append(sp.artists({artist_id[i]})['artists'][0]['genres'])
         album_genres.append(sp.artists({album_artist_id[i]})['artists'][0]['genres'])
         danceability.append(sp.audio_features(track_id[i])[0]['danceability'])
@@ -373,7 +321,7 @@ def get_playlist_tracks_dataframe(sp):
         print(f'{int((i / len(playlists)) * 100)}% done...')
 
         for j in range(no_of_tracks_in_current_playlist):
-            # Track
+            # Tracks
             track_id.append(tracks_in_playlist_list[j]['track']['id'])
             name.append(tracks_in_playlist_list[j]['track']['name'])
             popularity.append(tracks_in_playlist_list[j]['track']['popularity'])
@@ -393,7 +341,7 @@ def get_playlist_tracks_dataframe(sp):
             album_tracks.append(tracks_in_playlist_list[j]['track']['album']['total_tracks'])
             album_type.append(tracks_in_playlist_list[j]['track']['album']['type'])
 
-            # Playlist
+            # Playlists
             playlist_id.append(current_playlist_id)
             playlist_name.append(current_playlist_name)
             no_of_tracks_in_playlist.append(no_of_tracks_in_current_playlist)
@@ -462,4 +410,10 @@ def get_playlist_tracks_dataframe(sp):
                             }
 
     playlist_tracks_df = pd.DataFrame(data=playlist_tracks_dict)
+
+    # Create yaml dump
+    playlist_dict = dict(zip(playlist_tracks_df['playlist_name'], playlist_tracks_df['playlist_id']))
+    with open('spotify_data/playlists.yml', 'w') as outfile:
+        yaml.dump(playlist_dict, outfile, default_flow_style=False)
+
     return playlist_tracks_df
