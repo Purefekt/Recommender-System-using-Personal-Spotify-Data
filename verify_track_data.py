@@ -1,5 +1,5 @@
 from connect_to_api import connect_to_api
-connection_details_json = 'spotify_data/apu_spotify_details.json'
+connection_details_json = 'spotify_data/spotify_credentials.json'
 sp = connect_to_api(connection_details_json)
 
 # test if data of a track is legit

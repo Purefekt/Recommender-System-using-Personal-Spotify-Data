@@ -5,7 +5,7 @@ from spotipy.oauth2 import SpotifyOAuth
 
 def connect_to_api(spotify_json_file):
     """
-    :param spotify_json_file: The json file containing details as specified in the spotify_details_template.json
+    :param spotify_json_file: The json file containing details as specified in the spotify_credentials_template.json
     :return: spotify api client object which can be used for further function calls
     """
     with open(spotify_json_file, 'r') as spotify_details:

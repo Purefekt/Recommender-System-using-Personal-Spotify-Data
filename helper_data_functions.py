@@ -18,7 +18,7 @@ def get_top_artists_dataframe(sp):
 
     for i in range(len(top_artists_list)):
         # Status
-        print(f'{int((i / len(top_artists_list)) * 100)}% done...')
+        print(f'{round(float((i / len(top_artists_list)) * 100),2)}% done...')
 
         artist_id.append(top_artists_list[i]['id'])
         uri.append(top_artists_list[i]['uri'])
@@ -36,6 +36,7 @@ def get_top_artists_dataframe(sp):
                         }
 
     top_artists_df = pd.DataFrame(data=top_artists_dict)
+    top_artists_df.drop_duplicates(subset='id')
     return top_artists_df
 
 
@@ -55,7 +56,7 @@ def get_followed_artists_dataframe(sp):
 
     for i in range(len(followed_artists_list)):
         # Status
-        print(f'{int((i / len(followed_artists_list)) * 100)}% done...')
+        print(f'{round(float((i / len(followed_artists_list)) * 100), 2)}% done...')
 
         artist_id.append(followed_artists_list[i]['id'])
         uri.append(followed_artists_list[i]['uri'])
@@ -73,6 +74,7 @@ def get_followed_artists_dataframe(sp):
                              }
 
     followed_artists_df = pd.DataFrame(data=followed_artists_dict)
+    followed_artists_df.drop_duplicates(subset='id')
     return followed_artists_df
 
 
@@ -102,7 +104,7 @@ def get_top_tracks_dataframe(sp):
 
     for i in range(len(top_tracks_list)):
         # Status
-        print(f'{int((i / len(top_tracks_list)) * 100)}% done...')
+        print(f'{round(float((i / len(top_tracks_list)) * 100), 2)}% done...')
 
         # Tracks
         track_id.append(top_tracks_list[i]['id'])
@@ -185,6 +187,7 @@ def get_top_tracks_dataframe(sp):
                        }
 
     top_tracks_df = pd.DataFrame(data=top_tracks_dict)
+    top_tracks_df.drop_duplicates(subset='id')
     return top_tracks_df
 
 
@@ -214,7 +217,7 @@ def get_saved_tracks_dataframe(sp):
 
     for i in range(len(saved_tracks_list)):
         # Status
-        print(f'{int((i / len(saved_tracks_list)) * 100)}% done...')
+        print(f'{round(float((i / len(saved_tracks_list)) * 100), 2)}% done...')
 
         # Tracks
         track_id.append(saved_tracks_list[i]['track']['id'])
@@ -301,6 +304,7 @@ def get_saved_tracks_dataframe(sp):
                          }
 
     saved_tracks_df = pd.DataFrame(data=saved_tracks_dict)
+    saved_tracks_df.drop_duplicates(subset='id')
     return saved_tracks_df
 
 
@@ -348,7 +352,7 @@ def get_playlist_tracks_dataframe(sp):
             tracks_in_playlist_list.extend(results['items'])
 
         # Status
-        print(f'{int((i / len(playlists)) * 100)}% done...')
+        print(f'{round(float((i / len(playlists)) * 100), 2)}% done...')
 
         # Loop through all tracks in the current playlist
         for j in range(no_of_tracks_in_current_playlist):
@@ -456,6 +460,7 @@ def get_playlist_tracks_dataframe(sp):
                             }
 
     playlist_tracks_df = pd.DataFrame(data=playlist_tracks_dict)
+    playlist_tracks_df.drop_duplicates(subset='id')
 
     # Create yaml dump
     playlist_dict = dict(zip(playlist_tracks_df['playlist_name'], playlist_tracks_df['playlist_id']))
@@ -501,7 +506,7 @@ def get_recommendation_track_dataframe(sp):
     for j in range(len(top_track_ids_list)):
 
         # Status
-        print(f'{int((j / len(top_track_ids_list)) * 100)}% done...')
+        print(f'{round(float((j / len(top_track_ids_list)) * 100), 2)}% done...')
 
         current_top_track_id = top_track_ids_list[j]
 
@@ -597,4 +602,5 @@ def get_recommendation_track_dataframe(sp):
                                }
 
     recommended_tracks_df = pd.DataFrame(data=recommended_tracks_dict)
+    recommended_tracks_df.drop_duplicates(subset='id')
     return recommended_tracks_df
