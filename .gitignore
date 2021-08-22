@@ -9,3 +9,6 @@ __pycache__/
 # Spotify personal data files
 spotify_data/
 .cache
+
+# training data folder
+training/
