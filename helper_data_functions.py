@@ -1,198 +1,60 @@
 import pandas as pd
-import yaml
+import string
 
 
-def get_top_artists_dataframe(sp):
+def get_top_tracks_ids_dataframe(sp):
     """
+    We can get the top tracks of the user in 3 different time ranges, short, medium and long.
+    We will get the top tracks for all these time ranges and then remove duplicates.
+
     :param sp: Spotify OAuth
-    :return: pandas dataframe of top artists and corresponding artists data
+    :return: pandas dataframe of ids of all top tracks
     """
-    # get more than 50 top artists since api limits it to 50
-    results = sp.current_user_top_artists()
-    top_artists_list = results['items']
-    while results['next']:
-        results = sp.next(results)
-        top_artists_list.extend(results['items'])
 
-    artist_id, uri, artist_type, name, genres, followers = list(), list(), list(), list(), list(), list()
+    top_tracks_ids_list = list()
 
-    for i in range(len(top_artists_list)):
-        # Status
-        print(f'{round(float((i / len(top_artists_list)) * 100),2)}% done...')
-
-        artist_id.append(top_artists_list[i]['id'])
-        uri.append(top_artists_list[i]['uri'])
-        artist_type.append(top_artists_list[i]['type'])
-        name.append(top_artists_list[i]['name'])
-        genres.append(top_artists_list[i]['genres'])
-        followers.append(top_artists_list[i]['followers']['total'])
-
-    top_artists_dict = {'id': artist_id,
-                        'uri': uri,
-                        'type': artist_type,
-                        'name': name,
-                        'genres': genres,
-                        'followers': followers
-                        }
-
-    top_artists_df = pd.DataFrame(data=top_artists_dict)
-    top_artists_df.drop_duplicates(subset='id')
-    return top_artists_df
-
-
-def get_followed_artists_dataframe(sp):
-    """
-    :param sp: Spotify OAuth
-    :return: pandas dataframe of followed artists and corresponding artists data
-    """
-    # get more than 50 followed artists since api limits it to 50
-    results = sp.current_user_followed_artists()
-    followed_artists_list = results['artists']['items']
-    while results['artists']['next']:
-        results = sp.next(results['artists'])
-        followed_artists_list.extend(results['artists']['items'])
-
-    artist_id, uri, artist_type, name, genres, followers = list(), list(), list(), list(), list(), list(),
-
-    for i in range(len(followed_artists_list)):
-        # Status
-        print(f'{round(float((i / len(followed_artists_list)) * 100), 2)}% done...')
-
-        artist_id.append(followed_artists_list[i]['id'])
-        uri.append(followed_artists_list[i]['uri'])
-        artist_type.append(followed_artists_list[i]['type'])
-        name.append(followed_artists_list[i]['name'])
-        genres.append(followed_artists_list[i]['genres'])
-        followers.append(followed_artists_list[i]['followers']['total'])
-
-    followed_artists_dict = {'id': artist_id,
-                             'uri': uri,
-                             'type': artist_type,
-                             'name': name,
-                             'genres': genres,
-                             'followers': followers
-                             }
-
-    followed_artists_df = pd.DataFrame(data=followed_artists_dict)
-    followed_artists_df.drop_duplicates(subset='id')
-    return followed_artists_df
-
-
-def get_top_tracks_dataframe(sp):
-    """
-    :param sp: Spotify OAuth
-    :return: pandas dataframe of top tracks and corresponding track data
-    """
+    # short term
     # get more than 50 top tracks since api limits it to 50
-    results = sp.current_user_top_tracks()
+    results = sp.current_user_top_tracks(time_range='short_term')
     top_tracks_list = results['items']
     while results['next']:
         results = sp.next(results)
         top_tracks_list.extend(results['items'])
-
-    # 18 cols for tracks data
-    track_id, name, popularity, track_type, is_local, explicit, duration_ms, disc_number, track_number, artist_id, \
-    artist_name, album_artist_id, album_artist_name, album_id, album_name, album_release_date, album_tracks, \
-    album_type = list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), \
-                 list(), list(), list(), list(), list(), list(),
-
-    # 17 cols for track audio features
-    genres_artist, album_genres, danceability, energy, track_key, loudness, mode, speechiness, acousticness, \
-    instrumentalness, liveness, valence, tempo, uri, track_href, analysis_url, \
-    time_signature = list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), \
-                     list(), list(), list(), list(), list(),
-
+    # get a list of only the track ids
     for i in range(len(top_tracks_list)):
-        # Status
-        print(f'{round(float((i / len(top_tracks_list)) * 100), 2)}% done...')
+        top_tracks_ids_list.append(top_tracks_list[i]['id'])
 
-        # Tracks
-        track_id.append(top_tracks_list[i]['id'])
-        name.append(top_tracks_list[i]['name'])
-        popularity.append(top_tracks_list[i]['popularity'])
-        track_type.append(top_tracks_list[i]['type'])
-        is_local.append(top_tracks_list[i]['is_local'])
-        explicit.append(top_tracks_list[i]['explicit'])
-        duration_ms.append(top_tracks_list[i]['duration_ms'])
-        disc_number.append(top_tracks_list[i]['disc_number'])
-        track_number.append(top_tracks_list[i]['track_number'])
-        artist_id.append(top_tracks_list[i]['artists'][0]['id'])
-        artist_name.append(top_tracks_list[i]['artists'][0]['name'])
-        album_artist_id.append(top_tracks_list[i]['album']['artists'][0]['id'])
-        album_artist_name.append(top_tracks_list[i]['album']['artists'][0]['name'])
-        album_id.append(top_tracks_list[i]['album']['id'])
-        album_name.append(top_tracks_list[i]['album']['name'])
-        album_release_date.append(top_tracks_list[i]['album']['release_date'])
-        album_tracks.append(top_tracks_list[i]['album']['total_tracks'])
-        album_type.append(top_tracks_list[i]['album']['type'])
+    # medium term
+    # get more than 50 top tracks since api limits it to 50
+    results = sp.current_user_top_tracks(time_range='medium_term')
+    top_tracks_list = results['items']
+    while results['next']:
+        results = sp.next(results)
+        top_tracks_list.extend(results['items'])
+    # get a list of only the track ids
+    for i in range(len(top_tracks_list)):
+        top_tracks_ids_list.append(top_tracks_list[i]['id'])
 
-        # Track audio features
-        genres_artist.append(sp.artists({artist_id[-1]})['artists'][0]['genres'])
-        album_genres.append(sp.artists({album_artist_id[-1]})['artists'][0]['genres'])
+    # long term
+    # get more than 50 top tracks since api limits it to 50
+    results = sp.current_user_top_tracks(time_range='long_term')
+    top_tracks_list = results['items']
+    while results['next']:
+        results = sp.next(results)
+        top_tracks_list.extend(results['items'])
+    # get a list of only the track ids
+    for i in range(len(top_tracks_list)):
+        top_tracks_ids_list.append(top_tracks_list[i]['id'])
 
-        current_track_id = track_id[-1]
-        current_track_audio_features = sp.audio_features(current_track_id)
-
-        danceability.append(current_track_audio_features[0]['danceability'])
-        energy.append(current_track_audio_features[0]['energy'])
-        track_key.append(current_track_audio_features[0]['key'])
-        loudness.append(current_track_audio_features[0]['loudness'])
-        mode.append(current_track_audio_features[0]['mode'])
-        speechiness.append(current_track_audio_features[0]['speechiness'])
-        acousticness.append(current_track_audio_features[0]['acousticness'])
-        instrumentalness.append(current_track_audio_features[0]['instrumentalness'])
-        liveness.append(current_track_audio_features[0]['liveness'])
-        valence.append(current_track_audio_features[0]['valence'])
-        tempo.append(current_track_audio_features[0]['tempo'])
-        uri.append(current_track_audio_features[0]['uri'])
-        track_href.append(current_track_audio_features[0]['track_href'])
-        analysis_url.append(current_track_audio_features[0]['analysis_url'])
-        time_signature.append(current_track_audio_features[0]['time_signature'])
-
-    top_tracks_dict = {'id': track_id,
-                       'name': name,
-                       'popularity': popularity,
-                       'type': track_type,
-                       'is_local': is_local,
-                       'explicit': explicit,
-                       'duration_ms': duration_ms,
-                       'disc_number': disc_number,
-                       'track_number': track_number,
-                       'artist_id': artist_id,
-                       'artist_name': artist_name,
-                       'album_artist_id': album_artist_id,
-                       'album_artist_name': album_artist_name,
-                       'album_id': album_id,
-                       'album_name': album_name,
-                       'album_release_date': album_release_date,
-                       'album_tracks': album_tracks,
-                       'album_type': album_type,
-                       'genres': genres_artist,
-                       'album_genres': album_genres,
-                       'danceability': danceability,
-                       'energy': energy,
-                       'key': track_key,
-                       'loudness': loudness,
-                       'mode': mode,
-                       'speechiness': speechiness,
-                       'acousticness': acousticness,
-                       'instrumentalness': instrumentalness,
-                       'liveness': liveness,
-                       'valence': valence,
-                       'tempo': tempo,
-                       'uri': uri,
-                       'track_href': track_href,
-                       'analysis_url': analysis_url,
-                       'time_signature': time_signature
-                       }
-
-    top_tracks_df = pd.DataFrame(data=top_tracks_dict)
-    top_tracks_df.drop_duplicates(subset='id')
-    return top_tracks_df
+    top_tracks_ids_df = pd.DataFrame(top_tracks_ids_list, columns=['id'])
+    top_tracks_ids_df = top_tracks_ids_df.drop_duplicates()
+    return top_tracks_ids_df
 
 
-def get_saved_tracks_dataframe(sp):
+def get_saved_tracks_ids_dataframe(sp):
     """
+    We get the ids of all tracks that the user has saved.
+
     :param sp: Spotify OAuth
     :return: pandas dataframe of saved tracks and corresponding track data
     """
@@ -202,405 +64,244 @@ def get_saved_tracks_dataframe(sp):
     while results['next']:
         results = sp.next(results)
         saved_tracks_list.extend(results['items'])
-
-    # 19 cols for tracks
-    track_id, name, popularity, track_type, is_local, explicit, duration_ms, disc_number, track_number, artist_id, \
-    artist_name, album_artist_id, album_artist_name, album_id, album_name, album_release_date, album_tracks, \
-    album_type, added_at = list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), \
-                           list(), list(), list(), list(), list(), list(), list(), list()
-
-    # 17 cols for audio features
-    genres_artist, album_genres, danceability, energy, track_key, loudness, mode, speechiness, acousticness, \
-    instrumentalness, liveness, valence, tempo, uri, track_href, analysis_url, \
-    time_signature = list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), \
-                     list(), list(), list(), list(), list(),
-
+    # get a list of only saved track ids
+    saved_tracks_ids_list = list()
     for i in range(len(saved_tracks_list)):
-        # Status
-        print(f'{round(float((i / len(saved_tracks_list)) * 100), 2)}% done...')
+        saved_tracks_ids_list.append(saved_tracks_list[i]['track']['id'])
 
-        # Tracks
-        track_id.append(saved_tracks_list[i]['track']['id'])
-        name.append(saved_tracks_list[i]['track']['name'])
-        popularity.append(saved_tracks_list[i]['track']['popularity'])
-        track_type.append(saved_tracks_list[i]['track']['type'])
-        is_local.append(saved_tracks_list[i]['track']['is_local'])
-        explicit.append(saved_tracks_list[i]['track']['explicit'])
-        duration_ms.append(saved_tracks_list[i]['track']['duration_ms'])
-        disc_number.append(saved_tracks_list[i]['track']['disc_number'])
-        track_number.append(saved_tracks_list[i]['track']['track_number'])
-        artist_id.append(saved_tracks_list[i]['track']['artists'][0]['id'])
-        artist_name.append(saved_tracks_list[i]['track']['artists'][0]['name'])
-        album_artist_id.append(saved_tracks_list[i]['track']['album']['artists'][0]['id'])
-        album_artist_name.append(saved_tracks_list[i]['track']['album']['artists'][0]['name'])
-        album_id.append(saved_tracks_list[i]['track']['album']['id'])
-        album_name.append(saved_tracks_list[i]['track']['album']['name'])
-        album_release_date.append(saved_tracks_list[i]['track']['album']['release_date'])
-        album_tracks.append(saved_tracks_list[i]['track']['album']['total_tracks'])
-        album_type.append(saved_tracks_list[i]['track']['album']['type'])
-        added_at.append(saved_tracks_list[i]['added_at'])
-
-        # Track audio features
-        current_artist_id = artist_id[-1]
-        current_album_artist_id = album_artist_id[-1]
-        current_track_id = track_id[-1]
-        current_track_audio_features = sp.audio_features(current_track_id)
-
-        genres_artist.append(sp.artists({current_artist_id})['artists'][0]['genres'])
-        album_genres.append(sp.artists({current_album_artist_id})['artists'][0]['genres'])
-
-        danceability.append(current_track_audio_features[0]['danceability'])
-        energy.append(current_track_audio_features[0]['energy'])
-        track_key.append(current_track_audio_features[0]['key'])
-        loudness.append(current_track_audio_features[0]['loudness'])
-        mode.append(current_track_audio_features[0]['mode'])
-        speechiness.append(current_track_audio_features[0]['speechiness'])
-        acousticness.append(current_track_audio_features[0]['acousticness'])
-        instrumentalness.append(current_track_audio_features[0]['instrumentalness'])
-        liveness.append(current_track_audio_features[0]['liveness'])
-        valence.append(current_track_audio_features[0]['valence'])
-        tempo.append(current_track_audio_features[0]['tempo'])
-        uri.append(current_track_audio_features[0]['uri'])
-        track_href.append(current_track_audio_features[0]['track_href'])
-        analysis_url.append(current_track_audio_features[0]['analysis_url'])
-        time_signature.append(current_track_audio_features[0]['time_signature'])
-
-    saved_tracks_dict = {'id': track_id,
-                         'name': name,
-                         'popularity': popularity,
-                         'type': track_type,
-                         'is_local': is_local,
-                         'explicit': explicit,
-                         'duration_ms': duration_ms,
-                         'disc_number': disc_number,
-                         'track_number': track_number,
-                         'artist_id': artist_id,
-                         'artist_name': artist_name,
-                         'album_artist_id': album_artist_id,
-                         'album_artist_name': album_artist_name,
-                         'album_id': album_id,
-                         'album_name': album_name,
-                         'album_release_date': album_release_date,
-                         'album_tracks': album_tracks,
-                         'album_type': album_type,
-                         'added_at': added_at,
-                         'genres': genres_artist,
-                         'album_genres': album_genres,
-                         'danceability': danceability,
-                         'energy': energy,
-                         'key': track_key,
-                         'loudness': loudness,
-                         'mode': mode,
-                         'speechiness': speechiness,
-                         'acousticness': acousticness,
-                         'instrumentalness': instrumentalness,
-                         'liveness': liveness,
-                         'valence': valence,
-                         'tempo': tempo,
-                         'uri': uri,
-                         'track_href': track_href,
-                         'analysis_url': analysis_url,
-                         'time_signature': time_signature
-                         }
-
-    saved_tracks_df = pd.DataFrame(data=saved_tracks_dict)
-    saved_tracks_df.drop_duplicates(subset='id')
-    return saved_tracks_df
+    saved_tracks_ids_df = pd.DataFrame(saved_tracks_ids_list, columns=['id'])
+    saved_tracks_ids_df = saved_tracks_ids_df.drop_duplicates()
+    return saved_tracks_ids_df
 
 
-def get_playlist_tracks_dataframe(sp):
+def get_top_tracks_ids_of_top_artists_dataframe(sp):
     """
+    We get the ids of 10 top tracks of all top artists of the user.
+
     :param sp: Spotify OAuth
-    :return: pandas dataframe of tracks in playlists and corresponding track data
+    :return: pandas dataframe of top 10 tracks ids of all top artists
     """
-    # limiting this to 50 playlists to avoid too much data
-    playlists = sp.current_user_playlists()
-    playlists = playlists['items']
-
-    # 18 cols for tracks details
-    track_id, name, popularity, track_type, is_local, explicit, duration_ms, disc_number, track_number, artist_id, \
-    artist_name, album_artist_id, album_artist_name, album_id, album_name, album_release_date, album_tracks, \
-    album_type = list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), \
-                 list(), list(), list(), list(), list(), list()
-
-    # 5 cols for playlist details
-    playlist_id, playlist_name, no_of_tracks_in_playlist, added_at, added_by = list(), list(), list(), list(), list()
-
-    # 17 cols for audio features
-    genres_artist, album_genres, danceability, energy, track_key, loudness, mode, speechiness, acousticness, \
-    instrumentalness, liveness, valence, tempo, uri, track_href, analysis_url, time_signature = \
-        list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), \
-        list(), list(), list(), list()
-
-    # Get playlist id one by one
-    for i in range(len(playlists)):
-        # Skip broken album
-        if sp.playlist_tracks(playlists[i]['id'])['items'][1]['track'] is None:
-            print('Skipped a playlist')
-            i = i + 1
-
-        # Data used for 3 playlist columns
-        current_playlist_id = playlists[i]['id']
-        current_playlist_name = playlists[i]['name']
-        no_of_tracks_in_current_playlist = sp.playlist_tracks(current_playlist_id)['total']
-
-        # get more than 50 top tracks since api limits it to 50
-        results = sp.playlist_tracks(current_playlist_id)
-        tracks_in_playlist_list = results['items']
-        while results['next']:
-            results = sp.next(results)
-            tracks_in_playlist_list.extend(results['items'])
-
-        # Status
-        print(f'{round(float((i / len(playlists)) * 100), 2)}% done...')
-
-        # Loop through all tracks in the current playlist
-        for j in range(no_of_tracks_in_current_playlist):
-
-            # Checks to skip tracks with broken data
-            if tracks_in_playlist_list[j]['track']['album']['artists'] == []:
-                print('Skipped a track')
-                j = j + 1
-            if tracks_in_playlist_list[j]['track']['album']['artists'] == []:
-                print('Skipped a track')
-                j = j + 1
-            if sp.audio_features(tracks_in_playlist_list[j]['track']['id'])[0] is None:
-                j = j + 1
-                print('Skipped a track')
-
-            # Tracks
-            track_id.append(tracks_in_playlist_list[j]['track']['id'])
-            name.append(tracks_in_playlist_list[j]['track']['name'])
-            popularity.append(tracks_in_playlist_list[j]['track']['popularity'])
-            track_type.append(tracks_in_playlist_list[j]['track']['type'])
-            is_local.append(tracks_in_playlist_list[j]['track']['is_local'])
-            explicit.append(tracks_in_playlist_list[j]['track']['explicit'])
-            duration_ms.append(tracks_in_playlist_list[j]['track']['duration_ms'])
-            disc_number.append(tracks_in_playlist_list[j]['track']['disc_number'])
-            track_number.append(tracks_in_playlist_list[j]['track']['track_number'])
-            artist_id.append(tracks_in_playlist_list[j]['track']['artists'][0]['id'])
-            artist_name.append(tracks_in_playlist_list[j]['track']['artists'][0]['name'])
-            album_artist_id.append(tracks_in_playlist_list[j]['track']['album']['artists'][0]['id'])
-            album_artist_name.append(tracks_in_playlist_list[j]['track']['album']['artists'][0]['name'])
-            album_id.append(tracks_in_playlist_list[j]['track']['album']['id'])
-            album_name.append(tracks_in_playlist_list[j]['track']['album']['name'])
-            album_release_date.append(tracks_in_playlist_list[j]['track']['album']['release_date'])
-            album_tracks.append(tracks_in_playlist_list[j]['track']['album']['total_tracks'])
-            album_type.append(tracks_in_playlist_list[j]['track']['album']['type'])
-
-            # Playlists
-            playlist_id.append(current_playlist_id)
-            playlist_name.append(current_playlist_name)
-            no_of_tracks_in_playlist.append(no_of_tracks_in_current_playlist)
-            added_at.append(tracks_in_playlist_list[j]['added_at'])
-            added_by.append(tracks_in_playlist_list[j]['added_by'])
-
-            # Track audio features
-            current_track_id = sp.audio_features(tracks_in_playlist_list[j]['track']['id'])
-
-            genres_artist.append(sp.artist(tracks_in_playlist_list[j]['track']['artists'][0]['id'])['genres'])
-            album_genres.append(
-                sp.artist(tracks_in_playlist_list[j]['track']['album']['artists'][0]['id'])['genres'])
-            danceability.append(current_track_id[0]['danceability'])
-            energy.append(current_track_id[0]['energy'])
-            track_key.append(current_track_id[0]['key'])
-            loudness.append(current_track_id[0]['loudness'])
-            mode.append(current_track_id[0]['mode'])
-            speechiness.append(current_track_id[0]['speechiness'])
-            acousticness.append(current_track_id[0]['acousticness'])
-            instrumentalness.append(current_track_id[0]['instrumentalness'])
-            liveness.append(current_track_id[0]['liveness'])
-            valence.append(current_track_id[0]['valence'])
-            tempo.append(current_track_id[0]['tempo'])
-            uri.append(current_track_id[0]['uri'])
-            track_href.append(current_track_id[0]['track_href'])
-            analysis_url.append(current_track_id[0]['analysis_url'])
-            time_signature.append(current_track_id[0]['time_signature'])
-
-    playlist_tracks_dict = {'id': track_id,
-                            'name': name,
-                            'popularity': popularity,
-                            'type': track_type,
-                            'is_local': is_local,
-                            'explicit': explicit,
-                            'duration_ms': duration_ms,
-                            'disc_number': disc_number,
-                            'track_number': track_number,
-                            'artist_id': artist_id,
-                            'artist_name': artist_name,
-                            'album_artist_id': album_artist_id,
-                            'album_artist_name': album_artist_name,
-                            'album_id': album_id,
-                            'album_name': album_name,
-                            'album_release_date': album_release_date,
-                            'album_tracks': album_tracks,
-                            'album_type': album_type,
-                            'playlist_id': playlist_id,
-                            'playlist_name': playlist_name,
-                            'playlist_tracks': no_of_tracks_in_playlist,
-                            'added_at': added_at,
-                            'added_by': added_by,
-                            'genres': genres_artist,
-                            'album_genres': album_genres,
-                            'danceability': danceability,
-                            'energy': energy,
-                            'key': track_key,
-                            'loudness': loudness,
-                            'mode': mode,
-                            'speechiness': speechiness,
-                            'acousticness': acousticness,
-                            'instrumentalness': instrumentalness,
-                            'liveness': liveness,
-                            'valence': valence,
-                            'tempo': tempo,
-                            'uri': uri,
-                            'track_href': track_href,
-                            'analysis_url': analysis_url,
-                            'time_signature': time_signature
-                            }
-
-    playlist_tracks_df = pd.DataFrame(data=playlist_tracks_dict)
-    playlist_tracks_df.drop_duplicates(subset='id')
-
-    # Create yaml dump
-    playlist_dict = dict(zip(playlist_tracks_df['playlist_name'], playlist_tracks_df['playlist_id']))
-    with open('spotify_data/playlists.yml', 'w') as outfile:
-        yaml.dump(playlist_dict, outfile, default_flow_style=False)
-
-    return playlist_tracks_df
-
-
-def get_recommendation_track_dataframe(sp):
-    """
-    :param sp: Spotify OAuth
-    :return: pandas dataframe of recommended tracks based on top tracks and corresponding track data
-    """
-    # We will use the user's top tracks to get recommendation
-    # Per top track, we can get a maximum of 100 recommended tracks
-    # If we have 60 top tracks then we can get 6000 recommended tracks
-
-    # get more than 50 top tracks since api limits it to 50
-    results = sp.current_user_top_tracks()
-    top_tracks_list = results['items']
+    # get more than 50 top artists id since api limits it to 50
+    results = sp.current_user_top_artists()
+    top_artists_list = results['items']
     while results['next']:
         results = sp.next(results)
-        top_tracks_list.extend(results['items'])
+        top_artists_list.extend(results['items'])
 
-    # Get list of only top track id
-    top_track_ids_list = list()
-    for i in range(len(top_tracks_list)):
-        top_track_ids_list.append(top_tracks_list[i]['id'])
+    # get a list of only artists ids
+    top_artists_id_list = list()
+    for i in range(len(top_artists_list)):
+        top_artists_id_list.append(top_artists_list[i]['id'])
 
-    # 18 cols for tracks data
-    track_id, name, popularity, track_type, is_local, explicit, duration_ms, disc_number, track_number, artist_id, \
-    artist_name, album_artist_id, album_artist_name, album_id, album_name, album_release_date, album_tracks, \
-    album_type = list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), \
-                 list(), list(), list(), list(), list(), list(),
+    # using these artists id we can get their top 10 tracks
+    all_top_artists_top_tracks_ids_list = list()
+    for current_artist_id in top_artists_id_list:
+        current_artists_top_tracks = sp.artist_top_tracks(current_artist_id)
+        for j in range(len(current_artists_top_tracks['tracks'])):
+            all_top_artists_top_tracks_ids_list.append(current_artists_top_tracks['tracks'][j]['id'])
 
-    # 17 cols for track audio features
-    genres_artist, album_genres, danceability, energy, track_key, loudness, mode, speechiness, acousticness, \
-    instrumentalness, liveness, valence, tempo, uri, track_href, analysis_url, \
-    time_signature = list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), list(), \
-                     list(), list(), list(), list(), list(),
+    top_tracks_of_top_artists_df = pd.DataFrame(all_top_artists_top_tracks_ids_list, columns=['id'])
+    top_tracks_of_top_artists_df = top_tracks_of_top_artists_df.drop_duplicates()
+    return top_tracks_of_top_artists_df
 
-    for j in range(len(top_track_ids_list)):
+
+def get_random_tracks_ids(sp):
+    """
+    There is no API call which gives us random songs.
+    sp.search() can be used instead with a wildcard mask, %a% means the song will contain an a.
+    For all 26 alphabets and 10 numbers we can repeat this 36 times and upto 50 times per wildcard mask or 36*50 tracks.
+    I took ~ 1000 random tracks
+
+    :param sp: Spotify OAuth
+    :return: pandas dataframe of random tracks ids
+    """
+
+    random_tracks_ids_list = list()
+
+    characters = string.ascii_uppercase + string.digits
+    for chars in characters:
+        search = sp.search(q=f'{chars}%', limit=29)
+        for i in range(len(search['tracks']['items'])):
+            random_tracks_ids_list.append(search['tracks']['items'][i]['id'])
+
+    random_tracks_ids_df = pd.DataFrame(random_tracks_ids_list, columns=['id'])
+    random_tracks_ids_df = random_tracks_ids_df.drop_duplicates()
+    return random_tracks_ids_df
+
+
+def get_tracks_features(sp):
+    """
+    We will use get_top_tracks_ids_dataframe, get_saved_tracks_ids_dataframe,
+    get_top_tracks_ids_of_top_artists_dataframe and get_random_tracks_ids to get the features of those tracks.
+
+    :param sp: Spotify OAuth
+    :return: pandas dataframe of features of various tracks
+    """
+
+    tracks_ids_list = list()
+
+    # get list of all top tracks ids
+    top_tracks_ids_df = get_top_tracks_ids_dataframe(sp=sp)
+    tracks_ids_list.extend(top_tracks_ids_df['id'].to_list())
+
+    # get list of all saved tracks ids
+    saved_tracks_ids_df = get_saved_tracks_ids_dataframe(sp=sp)
+    tracks_ids_list.extend(saved_tracks_ids_df['id'].to_list())
+
+    # get list of all top tracks ids of top artists
+    top_tracks_of_top_artists_df = get_top_tracks_ids_of_top_artists_dataframe(sp=sp)
+    tracks_ids_list.extend(top_tracks_of_top_artists_df['id'].to_list())
+
+    # get list of all random tracks ids
+    random_tracks_ids_df = get_random_tracks_ids(sp=sp)
+    tracks_ids_list.extend(random_tracks_ids_df['id'].to_list())
+
+    # 16 cols for track audio features
+    popularity, explicit, duration_ms, danceability, energy, key, loudness, mode, speechiness, acousticness, \
+    instrumentalness, liveness, valence, tempo, time_signature, genre = list(), list(), list(), list(), list(), \
+                                                                        list(), list(), list(), list(), list(), \
+                                                                        list(), list(), list(), list(), list(), list(),
+
+    for i in range(len(tracks_ids_list)):
+
+        # Check to skip tracks with broken data
+        if sp.audio_features(tracks=tracks_ids_list[i])[0] is None:
+            i = i + 1
+            print('Skipped a track')
 
         # Status
-        print(f'{round(float((j / len(top_track_ids_list)) * 100), 2)}% done...')
+        print(f'{round(float(i/len(tracks_ids_list)*100), 2)}% done...')
 
-        current_top_track_id = top_track_ids_list[j]
+        current_track_id = tracks_ids_list[i]
 
-        # get 100 recommended tracks for current top track
-        recommended_tracks = sp.recommendations(seed_tracks=[current_top_track_id], limit=100)
+        track_data = sp.track(track_id=current_track_id)
+        track_audio_features = sp.audio_features(tracks=current_track_id)[0]
+        artists_id = track_data['artists'][0]['id']
 
-        # loop through all 100 recommended tracks and get the data of those tracks
-        for k in range(len(recommended_tracks['tracks'])):
+        popularity.append(track_data['popularity'])
+        explicit.append(track_data['explicit'])
+        duration_ms.append(track_data['duration_ms'])
+        danceability.append(track_audio_features['danceability'])
+        energy.append(track_audio_features['energy'])
+        key.append(track_audio_features['key'])
+        loudness.append(track_audio_features['loudness'])
+        mode.append(track_audio_features['mode'])
+        speechiness.append(track_audio_features['speechiness'])
+        acousticness.append(track_audio_features['acousticness'])
+        instrumentalness.append(track_audio_features['instrumentalness'])
+        liveness.append(track_audio_features['liveness'])
+        valence.append(track_audio_features['valence'])
+        tempo.append(track_audio_features['tempo'])
+        time_signature.append(track_audio_features['time_signature'])
+        genre.append(sp.artist(artist_id=artists_id)['genres'])
 
-            # Checks to skip tracks with broken data
-            if sp.audio_features(recommended_tracks['tracks'][k]['id'])[0] is None:
-                k = k + 1
-                print('Skipped a track')
+    tracks_features = {'id':tracks_ids_list,
+                       'popularity': popularity,
+                       'explicit': explicit,
+                       'duration_ms': duration_ms,
+                       'danceability': danceability,
+                       'energy': energy,
+                       'key': key,
+                       'loudness': loudness,
+                       'mode': mode,
+                       'speechiness': speechiness,
+                       'acousticness': acousticness,
+                       'instrumentalness': instrumentalness,
+                       'liveness': liveness,
+                       'valence': valence,
+                       'tempo': tempo,
+                       'time_signature': time_signature,
+                       'genre': genre
+                       }
 
-            # Tracks
-            track_id.append(recommended_tracks['tracks'][k]['id'])
-            name.append(recommended_tracks['tracks'][k]['name'])
-            popularity.append(recommended_tracks['tracks'][k]['popularity'])
-            track_type.append(recommended_tracks['tracks'][k]['type'])
-            is_local.append(recommended_tracks['tracks'][k]['is_local'])
-            explicit.append(recommended_tracks['tracks'][k]['explicit'])
-            duration_ms.append(recommended_tracks['tracks'][k]['duration_ms'])
-            disc_number.append(recommended_tracks['tracks'][k]['disc_number'])
-            track_number.append(recommended_tracks['tracks'][k]['track_number'])
-            artist_id.append(recommended_tracks['tracks'][k]['artists'][0]['id'])
-            artist_name.append(recommended_tracks['tracks'][k]['artists'][0]['name'])
-            album_artist_id.append(recommended_tracks['tracks'][k]['album']['artists'][0]['id'])
-            album_artist_name.append(recommended_tracks['tracks'][k]['album']['artists'][0]['name'])
-            album_id.append(recommended_tracks['tracks'][k]['album']['id'])
-            album_name.append(recommended_tracks['tracks'][k]['album']['name'])
-            album_release_date.append(recommended_tracks['tracks'][k]['album']['release_date'])
-            album_tracks.append(recommended_tracks['tracks'][k]['album']['total_tracks'])
-            album_type.append(recommended_tracks['tracks'][k]['album']['type'])
+    tracks_features_df = pd.DataFrame(data=tracks_features)
+    tracks_features_df = tracks_features_df.drop_duplicates(subset='id')
+    return tracks_features_df
 
-            # Track audio features
-            genres_artist.append(sp.artists({artist_id[-1]})['artists'][0]['genres'])
-            album_genres.append(sp.artists({album_artist_id[-1]})['artists'][0]['genres'])
 
-            current_track_id = track_id[-1]
-            current_track_audio_features = sp.audio_features(current_track_id)
+def get_recommended_tracks_dataframe(sp):
+    """
+    We will use the user's top tracks to get recommended tracks.
+    For every top track, we can get a maxmimum of 100 recommended tracks.
+    We will evaluate our model on this dataset and create playlist from these tracks
 
-            danceability.append(current_track_audio_features[0]['danceability'])
-            energy.append(current_track_audio_features[0]['energy'])
-            track_key.append(current_track_audio_features[0]['key'])
-            loudness.append(current_track_audio_features[0]['loudness'])
-            mode.append(current_track_audio_features[0]['mode'])
-            speechiness.append(current_track_audio_features[0]['speechiness'])
-            acousticness.append(current_track_audio_features[0]['acousticness'])
-            instrumentalness.append(current_track_audio_features[0]['instrumentalness'])
-            liveness.append(current_track_audio_features[0]['liveness'])
-            valence.append(current_track_audio_features[0]['valence'])
-            tempo.append(current_track_audio_features[0]['tempo'])
-            uri.append(current_track_audio_features[0]['uri'])
-            track_href.append(current_track_audio_features[0]['track_href'])
-            analysis_url.append(current_track_audio_features[0]['analysis_url'])
-            time_signature.append(current_track_audio_features[0]['time_signature'])
+    :param sp: Spotify OAuth
+    :return: pandas dataframe of recommended tracks based on top tracks and corresponding track features
+    """
 
-    recommended_tracks_dict = {'id': track_id,
-                               'name': name,
-                               'popularity': popularity,
-                               'type': track_type,
-                               'is_local': is_local,
-                               'explicit': explicit,
-                               'duration_ms': duration_ms,
-                               'disc_number': disc_number,
-                               'track_number': track_number,
-                               'artist_id': artist_id,
-                               'artist_name': artist_name,
-                               'album_artist_id': album_artist_id,
-                               'album_artist_name': album_artist_name,
-                               'album_id': album_id,
-                               'album_name': album_name,
-                               'album_release_date': album_release_date,
-                               'album_tracks': album_tracks,
-                               'album_type': album_type,
-                               'genres': genres_artist,
-                               'album_genres': album_genres,
-                               'danceability': danceability,
-                               'energy': energy,
-                               'key': track_key,
-                               'loudness': loudness,
-                               'mode': mode,
-                               'speechiness': speechiness,
-                               'acousticness': acousticness,
-                               'instrumentalness': instrumentalness,
-                               'liveness': liveness,
-                               'valence': valence,
-                               'tempo': tempo,
-                               'uri': uri,
-                               'track_href': track_href,
-                               'analysis_url': analysis_url,
-                               'time_signature': time_signature
-                               }
+    # get top tracks ids list using get_top_tracks_ids_dataframe
+    top_tracks_ids_df = get_top_tracks_ids_dataframe(sp=sp)
+    top_tracks_ids_list = top_tracks_ids_df['id'].to_list()
+
+    # get list of recommended tracks ids (100 each) for each top track
+    recommended_tracks_ids_list = list()
+    for current_top_track_id in top_tracks_ids_list:
+        # get 90 recommended tracks per top track
+        recommended_tracks = sp.recommendations(seed_tracks=[current_top_track_id], limit=90)['tracks']
+        for i in range(len(recommended_tracks)):
+            recommended_tracks_ids_list.append(recommended_tracks[i]['id'])
+
+    # now using this list of recommended tracks ids, we can get their track features
+
+    # 16 cols for track audio features
+    popularity, explicit, duration_ms, danceability, energy, key, loudness, mode, speechiness, acousticness, \
+    instrumentalness, liveness, valence, tempo, time_signature, genre = list(), list(), list(), list(), list(), \
+                                                                        list(), list(), list(), list(), list(), \
+                                                                        list(), list(), list(), list(), list(), list(),
+
+    for j in range(len(recommended_tracks_ids_list)):
+
+        # Check to skip tracks with broken data
+        if sp.audio_features(tracks=recommended_tracks_ids_list[j])[0] is None:
+            j = j + 1
+            print('Skipped a track')
+
+        # Status
+        print(f'{round(float(j/len(recommended_tracks_ids_list)*100), 2)}% done...')
+
+        current_track_id = recommended_tracks_ids_list[j]
+
+        track_data = sp.track(track_id=current_track_id)
+        track_audio_features = sp.audio_features(tracks=current_track_id)[0]
+        artists_id = track_data['artists'][0]['id']
+
+        popularity.append(track_data['popularity'])
+        explicit.append(track_data['explicit'])
+        duration_ms.append(track_data['duration_ms'])
+        danceability.append(track_audio_features['danceability'])
+        energy.append(track_audio_features['energy'])
+        key.append(track_audio_features['key'])
+        loudness.append(track_audio_features['loudness'])
+        mode.append(track_audio_features['mode'])
+        speechiness.append(track_audio_features['speechiness'])
+        acousticness.append(track_audio_features['acousticness'])
+        instrumentalness.append(track_audio_features['instrumentalness'])
+        liveness.append(track_audio_features['liveness'])
+        valence.append(track_audio_features['valence'])
+        tempo.append(track_audio_features['tempo'])
+        time_signature.append(track_audio_features['time_signature'])
+        genre.append(sp.artist(artist_id=artists_id)['genres'])
+
+    recommended_tracks_dict = {
+        'id':recommended_tracks_ids_list,
+        'popularity': popularity,
+        'explicit': explicit,
+        'duration_ms': duration_ms,
+        'danceability': danceability,
+        'energy': energy,
+        'key': key,
+        'loudness': loudness,
+        'mode': mode,
+        'speechiness': speechiness,
+        'acousticness': acousticness,
+        'instrumentalness': instrumentalness,
+        'liveness': liveness,
+        'valence': valence,
+        'tempo': tempo,
+        'time_signature': time_signature,
+        'genre': genre
+    }
 
     recommended_tracks_df = pd.DataFrame(data=recommended_tracks_dict)
-    recommended_tracks_df.drop_duplicates(subset='id')
+    recommended_tracks_df = recommended_tracks_df.drop_duplicates(subset='id')
     return recommended_tracks_df

@@ -102,6 +102,7 @@ readline=8.1=h9ed2024_0
 requests=2.25.1=pyhd3eb1b0_0
 scikit-learn=0.24.2=py39hb2f4e1b_0
 scipy=1.6.2=py39hd5f7400_1
+seaborn=0.11.0=py_0
 send2trash=1.5.0=pyhd3eb1b0_1
 setuptools=52.0.0=py39hecd8cb5_0
 sip=4.19.13=py39h23ab428_0

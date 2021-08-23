@@ -1,5 +1,5 @@
 # Recommender System using Personal Spotify Data
-Creating playlists using various Machine Learning classification algorithms on my personal Spotify data curated using the Spotify Web API.
+Creating playlists using various Machine Learning classification algorithms on my friend's Spotify data curated using the Spotify Web API.
 
 ## Getting the Music Data
 To start we need to acquire the Spotify music data. This requires connecting to the Spotify Web API and pulling different data that we might need.
