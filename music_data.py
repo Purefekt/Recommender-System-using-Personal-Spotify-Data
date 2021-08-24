@@ -33,7 +33,7 @@ print("Getting and saving ids of random tracks...")
 random_tracks_ids_df = get_random_tracks_ids(sp=sp)
 random_tracks_ids_df.to_csv('spotify_data/random_tracks_ids.csv')
 random_tracks_ids_df.to_pickle('spotify_data/random_tracks_ids.pkl')
-#
+
 print("Getting and saving track features of top tracks , saved tracks, top artists tracks and random tracks...")
 tracks_features_df = get_tracks_features(sp=sp)
 tracks_features_df.to_csv('spotify_data/tracks_features.csv')

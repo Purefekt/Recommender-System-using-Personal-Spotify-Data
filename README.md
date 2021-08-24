@@ -29,9 +29,9 @@ I have defined various functions in ```helper_data_functions.py``` which can be 
 ```music_data.py``` calls these functions and serializes the data.  
 
 We get the follow data:
-1. User's top artists data
-2. User's followed artists data
-3. User's top tracks data
-4. User's saved tracks data
-5. User's playlists tracks data
-6. User's recommended tracks data from user's top tracks
+1. Track ids of user's top tracks
+2. Track ids of user's saved tracks
+3. Track ids of top 10 tracks of user's top artists
+4. Track ids of random tracks (these will be labelled 0)
+5. Track features comprising of all tracks in 1-4
+6. Track features of recommended tracks (~7500 tracks recommended via 1-3)
