@@ -12,3 +12,7 @@ spotify_data/
 
 # training data folder
 model/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
