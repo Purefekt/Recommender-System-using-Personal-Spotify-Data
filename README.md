@@ -1,4 +1,7 @@
 # Recommender System using Personal Spotify Data
+<p align="center">
+    <img src="assets/random_forest_playlist.jpg" alt="random_forest_playlist" width="800"/>  
+</p>
 
 ## Summary
 8 Machine Learning supervised classification algorithms were used on my personal spotify data collected using Spotify Web API. These algorithms were used to create a recommender playlist. The features were scaled and normalized when needed and the hyperparameters were tuned to get the best results. The final playlist was sent back to my spotify account using the api.  
@@ -62,3 +65,7 @@ We get the follow data:
 4. Track ids of random tracks (these will be labelled 0)
 5. Track features comprising of all tracks in 1-4
 6. Track features of recommended tracks (~7500 tracks recommended via 1-3)
+
+<p align="center">
+    <img src="assets/k-nearest_neighbours_playlist.jpg" alt="k-nearest_neighbours_playlist" width="650"/>  
+</p>
