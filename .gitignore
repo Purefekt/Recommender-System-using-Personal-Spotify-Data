@@ -7,7 +7,7 @@ __pycache__/
 *.pyc
 
 # Spotify personal data files
-spotify_data/
+spotify_data/spotify_credentials.json
 .cache
 
 # training data folder

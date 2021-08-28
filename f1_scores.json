@@ -1,0 +1,38 @@
+{
+    "ignore": {
+        "f1_macro_average": 0.6234,
+        "f1_weighted_average": 0.243
+    },
+    "logistic_regression": {
+        "f1_macro_average": 0.3080459770114942,
+        "f1_weighted_average": 0.27427349448199484
+    },
+    "naive_bayes": {
+        "f1_macro_average": 0.745210248339831,
+        "f1_weighted_average": 0.7528201099086042
+    },
+    "stochastic_gradient_descent": {
+        "f1_macro_average": 0.3080459770114942,
+        "f1_weighted_average": 0.27427349448199484
+    },
+    "k_nearest_neighbours": {
+        "f1_macro_average": 0.8329114486188827,
+        "f1_weighted_average": 0.834311214741754
+    },
+    "decision_tree": {
+        "f1_macro_average": 0.8039087947882736,
+        "f1_weighted_average": 0.804337333751772
+    },
+    "random_forest": {
+        "f1_macro_average": 0.8278205861570039,
+        "f1_weighted_average": 0.8302037053826098
+    },
+    "support_vector_machine": {
+        "f1_macro_average": 0.35683760683760685,
+        "f1_weighted_average": 0.3959593378198029
+    },
+    "xg_boost": {
+        "f1_macro_average": 0.7979323308270677,
+        "f1_weighted_average": 0.8005083306272326
+    }
+}

@@ -1,0 +1,2 @@
+This directory contains the uncleaned track data collected using the Spotify Web Api and also the spotify credentials to authorize the API.
+These files are created in the music_data.py python script.
