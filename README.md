@@ -67,5 +67,5 @@ We get the follow data:
 6. Track features of recommended tracks (~7500 tracks recommended via 1-3)
 
 <p align="center">
-    <img src="assets/k-nearest_neighbours_playlist.jpg" alt="k-nearest_neighbours_playlist" width="650"/>  
+    <img src="assets/k-nearest_neighbours_playlist.jpg" alt="k-nearest_neighbours_playlist" width="800"/>  
 </p>
