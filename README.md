@@ -13,7 +13,7 @@ Algorithms used -
 5. Decision Tree -> [decision_tree.ipynb](decision_tree.ipynb)
 6. Random Forest -> [random_forest.ipynb](random_forest.ipynb)
 7. Support Vector Machine -> [support_vector_machine.ipynb](support_vector_machine.ipynb)
-8. XGBoost ->
+8. XGBoost -> [xgboost.ipynb](xgboost.ipynb)
 
 ## Results
 
