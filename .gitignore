@@ -10,9 +10,6 @@ __pycache__/
 spotify_data/spotify_credentials.json
 .cache
 
-# training data folder
-model/
-
 # Jupyter Notebook
 .ipynb_checkpoints
 */.ipynb_checkpoints/*

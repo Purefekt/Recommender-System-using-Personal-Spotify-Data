@@ -1,0 +1,2 @@
+This directory contains the cleaned train, test and evaluation datasets stored in pickle format.
+These files are created get_training_testing_and_evaluation_data.ipynb jupyter notebook.
