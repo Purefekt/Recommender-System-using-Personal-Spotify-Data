@@ -1,5 +1,21 @@
 # Recommender System using Personal Spotify Data
-Creating playlists using various Machine Learning classification algorithms on friend's Spotify data curated using the Spotify Web API.
+
+## Summary
+8 Machine Learning supervised classification algorithms were used on my personal spotify data collected using Spotify Web API. These algorithms were used to create a recommender playlist. The features were scaled and normalized when needed and the hyperparameters were tuned to get the best results. The final playlist was sent back to my spotify account using the api.  
+
+Data -  The data was collcted using Spotify Web API, more details [here](https://github.com/Purefekt/Recommender-System-using-Personal-Spotify-Data#getting-the-music-data). This was a binary classification problem, my top tracks, saved tracks and my top artists' top 10 tracks (for each artist) became the 1 class. Then some random tracks were pulled (almost as much as the number of tracks in 1 class) and were labelled as 0. Spotify has assigned track features like loudness, acousticness, tempo, genres etc to each track. These became the features of the dataset. Spotify also provides recommended tracks, i pulled around ~7000 of these, these became the tracks to be evaluated on. Any track in this set with a high enough probability would make it to the recommender playlist.
+
+Algorithms used - 
+1. Logistic Regression -> [logistic_regression.ipynb](logistic_regression.ipynb)
+2. Naive Bayes -> [naive_bayes.ipynb](naive_bayes.ipynb)
+3. Stochastic Gradient Descent -> [stochastic_gradient_descent.ipynb](stochastic_gradient_descent.ipynb)
+4. K-Nearest Neighbours -> [k-nearest_neighbours.ipynb](k-nearest_neighbours.ipynb)
+5. Decision Tree -> [decision_tree.ipynb](decision_tree.ipynb)
+6. Random Forest -> [random_forest.ipynb](random_forest.ipynb)
+7. Support Vector Machine ->
+8. XGBoost ->
+
+## Results
 
 ## Getting the Music Data
 To start we need to acquire the Spotify music data. This requires connecting to the Spotify Web API and pulling different data that we might need.
